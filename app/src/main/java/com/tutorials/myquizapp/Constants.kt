@@ -6,7 +6,7 @@ object Constants {
 
         val que1 = Question(
             id = 1,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_argentina,
             optionOne = "Argentina",
             optionTwo = "Australia",
@@ -18,7 +18,7 @@ object Constants {
 
         val que2 = Question(
             id = 2,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_brazil,
             optionOne = "Argentina",
             optionTwo = "Congo",
@@ -30,7 +30,7 @@ object Constants {
 
         val que3 = Question(
             id = 3,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_india,
             optionOne = "Pakistan",
             optionTwo = "Nepal",
@@ -42,7 +42,7 @@ object Constants {
 
         val que4 = Question(
             id = 4,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_israel,
             optionOne = "Israel",
             optionTwo = "Iran",
@@ -54,7 +54,7 @@ object Constants {
 
         val que5 = Question(
             id = 5,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_mongolia,
             optionOne = "China",
             optionTwo = "Mongolia",
@@ -66,7 +66,7 @@ object Constants {
 
         val que6 = Question(
             id = 6,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_new_zealand,
             optionOne = "United Kingdom",
             optionTwo = "Australia",
@@ -78,7 +78,7 @@ object Constants {
 
         val que7 = Question(
             id = 7,
-            questions = "What country does this flag belong to?",
+            question = "What country does this flag belong to?",
             Image = R.drawable.flag_of_south_africa,
             optionOne = "Syria",
             optionTwo = "ghana",

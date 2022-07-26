@@ -2,7 +2,7 @@ package com.tutorials.myquizapp
 
 data class Question(
     val id: Int,
-    val questions: String,
+    val question: String,
     val Image: Int,
     val optionOne: String,
     val optionTwo: String,
