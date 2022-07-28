@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
+import kotlin.random.Random
 
 class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -68,10 +69,7 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         tvProgress?.text = "$mCurrentPosition/${progressBar?.max}"
         ivImage?.setImageResource(question.Image)
         tvQuestion?.text = question.question
-        tvOptionOne?.text = question.optionOne
-        tvOptionTwo?.text = question.optionTwo
-        tvOptionThree?.text = question.optionThree
-        tvOptionFour?.text = question.optionFour
+        setOptions(question)
 
         setAnswerPosition(question)
 
@@ -79,6 +77,54 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
             btnSubmit?.text = "FINISH"
         }else{
             btnSubmit?.text = "SUBMIT"
+        }
+    }
+
+    private fun setOptions(question: Question) {
+        tvOptionOne?.text = ""
+        tvOptionTwo?.text = ""
+        tvOptionThree?.text = ""
+        tvOptionFour?.text = ""
+
+        val random = Random(System.currentTimeMillis())
+        var selected : Int = 0
+        var randomCheck = mutableListOf<Int>()
+
+        while(selected < 4){
+            var tempNum : Int = random.nextInt(4)
+            if(randomCheck.contains(tempNum))
+                continue
+
+            when(tempNum){
+                0 -> {
+                    if(tvOptionOne?.text.toString() == "") {
+                        tvOptionOne?.text = question.options?.get(selected)
+                        selected++
+                        randomCheck.add(tempNum)
+                    }
+                }
+                1 -> {
+                    if(tvOptionTwo?.text.toString() == "") {
+                        tvOptionTwo?.text = question.options?.get(selected)
+                        selected++
+                        randomCheck.add(tempNum)
+                    }
+                }
+                2 -> {
+                    if(tvOptionThree?.text.toString() == "") {
+                        tvOptionThree?.text = question.options?.get(selected)
+                        selected++
+                        randomCheck.add(tempNum)
+                    }
+                }
+                3 -> {
+                    if(tvOptionFour?.text.toString() == "") {
+                        tvOptionFour?.text = question.options?.get(selected)
+                        selected++
+                        randomCheck.add(tempNum)
+                    }
+                }
+            }
         }
     }
 

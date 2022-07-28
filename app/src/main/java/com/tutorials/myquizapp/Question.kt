@@ -10,9 +10,6 @@ data class Question(
     val type: QuizType,
     val question: String,
     val Image: Int,
-    val optionOne: String,
-    val optionTwo: String,
-    val optionThree: String,
-    val optionFour: String,
+    var options: List<String>?,
     val correctAnswer: String
 )
