@@ -13,8 +13,11 @@ import androidx.core.content.ContextCompat
 class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mCurrentPosition : Int = 1
+    private var mFinalPosition : Int = 7
     private var mQuestionsList: ArrayList<Question>? = null
     private var mSelectedOptionPosition : Int = 0
+    private var mSelectedOptionValue : String = ""
+    private var mCorrectAnswerPosition : Int = 0
     private var mUserName : String? = null
     private var mCorrectAnswers : Int = 0
 
@@ -70,10 +73,21 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         tvOptionThree?.text = question.optionThree
         tvOptionFour?.text = question.optionFour
 
-        if(mCurrentPosition == mQuestionsList!!.size){
+        setAnswerPosition(question)
+
+        if(mCurrentPosition == mFinalPosition){
             btnSubmit?.text = "FINISH"
         }else{
             btnSubmit?.text = "SUBMIT"
+        }
+    }
+
+    private fun setAnswerPosition(question: Question) {
+        mCorrectAnswerPosition = when (question.correctAnswer) {
+            tvOptionOne?.text.toString() -> 1
+            tvOptionTwo?.text.toString() -> 2
+            tvOptionThree?.text.toString() -> 3
+            else -> 4
         }
     }
 
@@ -106,6 +120,7 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         defaultOptionsView()
 
         mSelectedOptionPosition = selectedOptionNum
+        mSelectedOptionValue = tv.text.toString()
         tv.setTextColor(Color.parseColor("#363A43"))
         tv.setTypeface(tv.typeface, Typeface.BOLD)
         tv.background = ContextCompat.getDrawable(
@@ -141,28 +156,28 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
                     mCurrentPosition++
 
                     when{
-                        mCurrentPosition <= mQuestionsList!!.size ->{
+                        mCurrentPosition <= mFinalPosition ->{
                             setQuestion()
                         }
                         else ->{
                             val intent = Intent(this, ResultActivity::class.java)
                             intent.putExtra(Constants.USER_NAME, mUserName)
                             intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
-                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList?.size)
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, mFinalPosition)
                             startActivity(intent)
                             finish()
                         }
                     }
                 }else{
                     val question = mQuestionsList?.get(mCurrentPosition - 1)
-                    if(question!!.correctAnswer != mSelectedOptionPosition){
+                    if(question!!.correctAnswer != mSelectedOptionValue){
                         answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
                     }else{
                         mCorrectAnswers++
                     }
-                    answerView(question!!.correctAnswer, R.drawable.correct_option_border_bg)
+                    answerView(mCorrectAnswerPosition, R.drawable.correct_option_border_bg)
 
-                    if(mCurrentPosition == mQuestionsList!!.size){
+                    if(mCurrentPosition == mFinalPosition){
                         btnSubmit?.text = "FINISH"
                     }else{
                         btnSubmit?.text = "GO TO NEXT QUESTION"
