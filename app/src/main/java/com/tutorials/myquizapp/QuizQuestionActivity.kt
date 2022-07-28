@@ -16,11 +16,13 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
     private var mCurrentPosition : Int = 1
     private var mFinalPosition : Int = 7
     private var mQuestionsList: ArrayList<Question>? = null
+    private var mQuestionNumberList: ArrayList<Int> = arrayListOf()
     private var mSelectedOptionPosition : Int = 0
     private var mSelectedOptionValue : String = ""
     private var mCorrectAnswerPosition : Int = 0
     private var mUserName : String? = null
     private var mCorrectAnswers : Int = 0
+    private val random = Random(System.currentTimeMillis())
 
     private var progressBar : ProgressBar? = null
     private var tvProgress : TextView? = null
@@ -57,14 +59,28 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         btnSubmit?.setOnClickListener(this)
 
         mQuestionsList = Constants.getQuestions()
+        setQuestionNumberList()
 
         setQuestion()
         defaultOptionsView()
     }
 
+    private fun setQuestionNumberList(){
+        var count : Int = 0
+        while(count < 7){
+            var tempNum = mQuestionsList?.size?.let { random.nextInt(it) }
+            if (tempNum != null) {
+                if(mQuestionNumberList.contains(tempNum + 1))
+                    continue
+                mQuestionNumberList.add(tempNum + 1)
+                count++
+            }
+        }
+    }
+
     private fun setQuestion() {
         defaultOptionsView()
-        val question: Question = mQuestionsList!![mCurrentPosition - 1]
+        val question: Question = mQuestionsList!![mQuestionNumberList[mCurrentPosition - 1]]
         progressBar?.progress = mCurrentPosition
         tvProgress?.text = "$mCurrentPosition/${progressBar?.max}"
         ivImage?.setImageResource(question.Image)
@@ -86,7 +102,7 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         tvOptionThree?.text = ""
         tvOptionFour?.text = ""
 
-        val random = Random(System.currentTimeMillis())
+
         var selected : Int = 0
         var randomCheck = mutableListOf<Int>()
 
@@ -215,7 +231,7 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     }
                 }else{
-                    val question = mQuestionsList?.get(mCurrentPosition - 1)
+                    val question = mQuestionsList!![mQuestionNumberList[mCurrentPosition - 1]]
                     if(question!!.correctAnswer != mSelectedOptionValue){
                         answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
                     }else{
