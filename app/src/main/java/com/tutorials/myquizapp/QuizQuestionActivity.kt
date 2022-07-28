@@ -23,6 +23,8 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
     private var mUserName : String? = null
     private var mCorrectAnswers : Int = 0
     private val random = Random(System.currentTimeMillis())
+    private var mIsSelected : Boolean = false
+    private var mIsCheckAnswer : Boolean = false
 
     private var progressBar : ProgressBar? = null
     private var tvProgress : TextView? = null
@@ -70,9 +72,9 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         while(count < 7){
             var tempNum = mQuestionsList?.size?.let { random.nextInt(it) }
             if (tempNum != null) {
-                if(mQuestionNumberList.contains(tempNum + 1))
+                if(mQuestionNumberList.contains(tempNum))
                     continue
-                mQuestionNumberList.add(tempNum + 1)
+                mQuestionNumberList.add(tempNum)
                 count++
             }
         }
@@ -85,6 +87,8 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
         tvProgress?.text = "$mCurrentPosition/${progressBar?.max}"
         ivImage?.setImageResource(question.Image)
         tvQuestion?.text = question.question
+        mIsCheckAnswer = false
+        mIsSelected = false
         setOptions(question)
 
         setAnswerPosition(question)
@@ -179,16 +183,19 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun selectedOptionView(tv: TextView, selectedOptionNum: Int){
-        defaultOptionsView()
+        if(!mIsCheckAnswer) {
+            defaultOptionsView()
 
-        mSelectedOptionPosition = selectedOptionNum
-        mSelectedOptionValue = tv.text.toString()
-        tv.setTextColor(Color.parseColor("#363A43"))
-        tv.setTypeface(tv.typeface, Typeface.BOLD)
-        tv.background = ContextCompat.getDrawable(
-            this,
-            R.drawable.selected_option_border_bg
-        )
+            mSelectedOptionPosition = selectedOptionNum
+            mSelectedOptionValue = tv.text.toString()
+            tv.setTextColor(Color.parseColor("#363A43"))
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+            tv.background = ContextCompat.getDrawable(
+                this,
+                R.drawable.selected_option_border_bg
+            )
+            mIsSelected = true
+        }
     }
 
     override fun onClick(view: View?) {
@@ -214,38 +221,39 @@ class QuizQuestionActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             R.id.btn_submit ->{
-                if(mSelectedOptionPosition == 0){
-                    mCurrentPosition++
+                if(mIsSelected) {
+                    if (mIsCheckAnswer) {
+                        mCurrentPosition++
 
-                    when{
-                        mCurrentPosition <= mFinalPosition ->{
-                            setQuestion()
+                        when {
+                            mCurrentPosition <= mFinalPosition -> {
+                                setQuestion()
+                            }
+                            else -> {
+                                val intent = Intent(this, ResultActivity::class.java)
+                                intent.putExtra(Constants.USER_NAME, mUserName)
+                                intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
+                                intent.putExtra(Constants.TOTAL_QUESTIONS, mFinalPosition)
+                                startActivity(intent)
+                                finish()
+                            }
                         }
-                        else ->{
-                            val intent = Intent(this, ResultActivity::class.java)
-                            intent.putExtra(Constants.USER_NAME, mUserName)
-                            intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
-                            intent.putExtra(Constants.TOTAL_QUESTIONS, mFinalPosition)
-                            startActivity(intent)
-                            finish()
+                    } else {
+                        val question = mQuestionsList!![mQuestionNumberList[mCurrentPosition - 1]]
+                        if (question!!.correctAnswer != mSelectedOptionValue) {
+                            answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+                        } else {
+                            mCorrectAnswers++
+                        }
+                        answerView(mCorrectAnswerPosition, R.drawable.correct_option_border_bg)
+                        mIsCheckAnswer = true
+
+                        if (mCurrentPosition == mFinalPosition) {
+                            btnSubmit?.text = "FINISH"
+                        } else {
+                            btnSubmit?.text = "GO TO NEXT QUESTION"
                         }
                     }
-                }else{
-                    val question = mQuestionsList!![mQuestionNumberList[mCurrentPosition - 1]]
-                    if(question!!.correctAnswer != mSelectedOptionValue){
-                        answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
-                    }else{
-                        mCorrectAnswers++
-                    }
-                    answerView(mCorrectAnswerPosition, R.drawable.correct_option_border_bg)
-
-                    if(mCurrentPosition == mFinalPosition){
-                        btnSubmit?.text = "FINISH"
-                    }else{
-                        btnSubmit?.text = "GO TO NEXT QUESTION"
-                    }
-
-                    mSelectedOptionPosition = 0
                 }
             }
         }
